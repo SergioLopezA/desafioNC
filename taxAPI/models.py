@@ -54,6 +54,6 @@ class Transaction(models.Model):
 
     payment_method = models.CharField(max_length=2, choices=METHOD_CHOICES)
     card_number = models.IntegerField(blank=True, null=True)
-    amount = models.DecimalField(max_digits=5, decimal_places=2)
+    amount = models.DecimalField(max_digits=7, decimal_places=2)
     code_bar = models.ForeignKey(Payable, on_delete=models.CASCADE)
     paid_date = models.DateField(default=datetime.date.today)
