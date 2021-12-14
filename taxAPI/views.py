@@ -125,12 +125,10 @@ class TransactionView(View):
         if payable.status != 0:
             return JsonResponse({'message': 'Err cant pay this Payable'}, status=402)
         elif float(amount) != float(payable.amount):
-            print(type(amount))
-            print(type(payable.amount))
             return JsonResponse({'message': 'Err amount do not match'}, status=402)
 
         if payment_method == 'CA':
-            card_number = ""
+            card_number = None
         elif card_number < 1000000000000000 or card_number > 999999999999999999:
             return JsonResponse({'message': 'wrong card number'}, status=402)
 
@@ -139,15 +137,13 @@ class TransactionView(View):
             'payment_method': payment_method,
             'card_number': card_number,
             'paid_date': paid_date,
-            'code_bar': payable.id,
+            'code_bar': payable,
         }
 
         payable.status = 1
 
         try:
-            transaction = Transaction.objects.create(
-                amount=amount, payment_method="CA",
-                card_number=card_number, paid_date=paid_date, code_bar=payable.id)
+            transaction = Transaction.objects.create(**transaction_data)
             transaction.save()
         except:
             return JsonResponse({'message': 'Error creating Transaction'}, status=402)
